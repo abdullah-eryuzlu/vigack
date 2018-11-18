@@ -16,7 +16,7 @@ typedef struct {
 } cracker;
 
 cracker vc_init(char* cipher_text, UnsignedPair freq_table, int min_kl, int max_kl, wchar_t* alphabet, wchar_t* wcipher_text);
-void vc_crack(cracker* self);
+void vc_crack(cracker* self, size_t key_size, char* key_output);
 int vc_get_coincidences(cracker* self, int offset);
 void vc_set_klt(cracker* self);
 float vc_score_of_guess(cracker* self, UnsignedPair* cct, int key_length, int offset, int shift);
@@ -32,6 +32,6 @@ float wvc_score_of_guess(cracker* self, UnsignedPair* cct, int key_length, int o
 void wvc_guess_key(cracker* self, wchar_t* output, int key_length);
 UnsignedPair wvc_get_cct(cracker* self, int key_length, int offset);
 wchar_t wvc_guess_char(cracker* self, int key_length, int offset);
-void wvc_crack(cracker* self);
+void wvc_crack(cracker* self, size_t nth, wchar_t* output);
 
 #endif /* cracker_h */

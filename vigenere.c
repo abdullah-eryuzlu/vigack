@@ -5,44 +5,27 @@
 #include <stdio.h>
 #include <ctype.h>
 
-char* vg_get_eliminated_text(char* text, unsigned is_reversed) {
-  int count = 0;
-  int index = 0;
+void vg_get_eliminated_text(char* text, unsigned is_reversed, char* output) {
+  // Since we are not dealing with encryption we can assume that text comes in
+  // a nice format
   for (int i = 0; i < strlen(text); i++) {
-    if ((text[i] <= 'Z' && text[i] >= 'A') || (text[i] <= 'z' && text[i] >= 'a'))
-      count++;
+    if (text[i] <= 'Z' && text[i] >= 'A')
+      output[i] = is_reversed ? (int)'Z' - text[i] + (int)'A' + 1 : text[i];
+    else if (text[i] <= 'z' && text[i] >= 'a')
+      output[i] = is_reversed ? (int)'Z'-(text[i] - (int)'a' + (int)'A')+(int)'A' + 1 : text[i] - (int)'a' + (int)'A';
   }
-  char* output = malloc(sizeof(char) * count + 1);
-
-  for (int i = 0; i < strlen(text); i++) {
-    if ((text[i] <= 'Z' && text[i] >= 'A') || (text[i] <= 'z' && text[i] >= 'a')) {
-      output[index] = text[i];
-      index++;
-    }
-  }
-  output[index] = '\0';
-
-  for (int i = 0; i < count; i++) {
-    if (output[i] <= 'Z' && output[i] >= 'A')
-      output[i] = is_reversed ? (int)'Z' - output[i] + (int)'A' + 1 : output[i];
-    else if (output[i] <= 'z' && output[i] >= 'a')
-      output[i] = is_reversed ? (int)'Z'-(output[i] - (int)'a' + (int)'A')+(int)'A' + 1 : output[i] - (int)'a' + (int)'A';
-  }
-
-  return output;
 }
 
-char* vg_shift_text(char* text, char* key, unsigned is_encrypt) {
-  char* e_key = vg_get_eliminated_text(key, !is_encrypt);
-  char* e_text = vg_get_eliminated_text(text, 0);
+void vg_shift_text(char* text, char* key, unsigned is_encrypt, char* output) {
+  char e_key[strlen(key) + 1], e_text[strlen(text) + 1];
+  e_key[strlen(key)] = '\0'; e_text[strlen(text)] = '\0';
+  vg_get_eliminated_text(key, !is_encrypt, e_key);
+  vg_get_eliminated_text(text, 0, e_text);
 
   for (int i = 0; i < strlen(e_text); i++) {
     char t = ((e_text[i] - 'A') + (e_key[i%strlen(e_key)] - 'A')) % ('Z' - 'A' + 1) +  'A';
-    e_text[i] = t;
+    output[i] = t;
   }
-
-  free(e_key);
-  return e_text;
 }
 
 int wvg_index_of(wchar_t* text, wchar_t c) {
@@ -66,17 +49,17 @@ void wvg_shift_text(wchar_t* alphabet, wchar_t* text, wchar_t* key, unsigned is_
 }
 
 void wvg_encrypt(wchar_t* alphabet, wchar_t* text, wchar_t* key, wchar_t* output) {
-  return wvg_shift_text(alphabet, text, key, 1, output);
+  wvg_shift_text(alphabet, text, key, 1, output);
 }
 
 void wvg_decrypt(wchar_t* alphabet, wchar_t* text, wchar_t* key, wchar_t* output) {
-  return wvg_shift_text(alphabet, text, key, 0, output);
+  wvg_shift_text(alphabet, text, key, 0, output);
 }
 
-char* vg_encrypt(char* text, char* key) {
-  return vg_shift_text(text, key, 1);
+void vg_encrypt(char* text, char* key, char* output) {
+  vg_shift_text(text, key, 1, output);
 }
 
-char* vg_decrypt(char* text, char* key) {
-  return vg_shift_text(text, key, 0);
+void vg_decrypt(char* text, char* key, char* output) {
+  vg_shift_text(text, key, 0, output);
 }
