@@ -153,35 +153,35 @@ UnsignedPair wtester_set_ft() {
 
   UnsignedPair freq_table = up_init();
 
-  up_set_value(&freq_table, (float) L'a', 0.118);
-  up_set_value(&freq_table, (float) L'b', 0.03);
-  up_set_value(&freq_table, (float) L'c', 0.01);
-  up_set_value(&freq_table, (float) L'ç', 0.012);
-  up_set_value(&freq_table, (float) L'd', 0.05);
-  up_set_value(&freq_table, (float) L'e', 0.091);
-  up_set_value(&freq_table, (float) L'f', 0.004);
-  up_set_value(&freq_table, (float) L'g', 0.014);
-  up_set_value(&freq_table, (float) L'ğ', 0.011);
-  up_set_value(&freq_table, (float) L'h', 0.01);
-  up_set_value(&freq_table, (float) L'ı', 0.053);
-  up_set_value(&freq_table, (float) L'i', 0.083);
-  up_set_value(&freq_table, (float) L'j', 0.001);
-  up_set_value(&freq_table, (float) L'k', 0.052);
-  up_set_value(&freq_table, (float) L'l', 0.006);
-  up_set_value(&freq_table, (float) L'm', 0.041);
-  up_set_value(&freq_table, (float) L'n', 0.078);
-  up_set_value(&freq_table, (float) L'o', 0.03);
-  up_set_value(&freq_table, (float) L'ö', 0.01);
-  up_set_value(&freq_table, (float) L'p', 0.009);
-  up_set_value(&freq_table, (float) L'r', 0.077);
-  up_set_value(&freq_table, (float) L's', 0.038);
-  up_set_value(&freq_table, (float) L'ş', 0.028);
-  up_set_value(&freq_table, (float) L't', 0.039);
-  up_set_value(&freq_table, (float) L'u', 0.041);
-  up_set_value(&freq_table, (float) L'ü', 0.029);
-  up_set_value(&freq_table, (float) L'v', 0.012);
-  up_set_value(&freq_table, (float) L'y', 0.041);
-  up_set_value(&freq_table, (float) L'z', 0.02);
+  up_set_value(&freq_table, (float) L'a', 0.1168);
+  up_set_value(&freq_table, (float) L'b', 0.0295);
+  up_set_value(&freq_table, (float) L'c', 0.0126);
+  up_set_value(&freq_table, (float) L'ç', 0.0097);
+  up_set_value(&freq_table, (float) L'd', 0.0487);
+  up_set_value(&freq_table, (float) L'e', 0.0901);
+  up_set_value(&freq_table, (float) L'f', 0.0044);
+  up_set_value(&freq_table, (float) L'g', 0.0134);
+  up_set_value(&freq_table, (float) L'ğ', 0.0113);
+  up_set_value(&freq_table, (float) L'h', 0.0114);
+  up_set_value(&freq_table, (float) L'ı', 0.0520);
+  up_set_value(&freq_table, (float) L'i', 0.0827);
+  up_set_value(&freq_table, (float) L'j', 0.0001);
+  up_set_value(&freq_table, (float) L'k', 0.0471);
+  up_set_value(&freq_table, (float) L'l', 0.0575);
+  up_set_value(&freq_table, (float) L'm', 0.0374);
+  up_set_value(&freq_table, (float) L'n', 0.0723);
+  up_set_value(&freq_table, (float) L'o', 0.0245);
+  up_set_value(&freq_table, (float) L'ö', 0.0087);
+  up_set_value(&freq_table, (float) L'p', 0.0079);
+  up_set_value(&freq_table, (float) L'r', 0.0695);
+  up_set_value(&freq_table, (float) L's', 0.0295);
+  up_set_value(&freq_table, (float) L'ş', 0.0194);
+  up_set_value(&freq_table, (float) L't', 0.0309);
+  up_set_value(&freq_table, (float) L'u', 0.0343);
+  up_set_value(&freq_table, (float) L'ü', 0.0199);
+  up_set_value(&freq_table, (float) L'v', 0.0098);
+  up_set_value(&freq_table, (float) L'y', 0.0337);
+  up_set_value(&freq_table, (float) L'z', 0.0150);
 
   return freq_table;
 }
@@ -190,7 +190,7 @@ void wtester_run(tester *t) {
   for (int text_i = 0; text_i < TEXT_SIZE_COUNT; text_i++) {
     for (int key_i = 0; key_i < KEY_SIZE_COUNT; key_i++) {
       float succ_counter = 0;
-      for (int s_c = 0; s_c < 10; s_c++) {
+      for (int s_c = 0; s_c < 3; s_c++) {
         struct timeval stop, start;
 
 
@@ -223,21 +223,21 @@ void wtester_run(tester *t) {
 
         gettimeofday(&start, NULL);
         cracker vc = vc_init("", freq_table, MIN_KL, MAX_KL, t -> alphabet, encrypted);
-        // exit(0);
+        // exit(0);3114
         for (int i = 0; i < up_size(&vc.m_klt); i++) {
-          // succ_counter++;
+          succ_counter++;
           float pair[2] = { 0 };
           up_get_pair(&vc.m_klt, i, pair);
           wchar_t cracked_key[(int) pair[0] + 1];
           wvc_crack(&vc, i, cracked_key);
           if (key_size == pair[0]) {
-            int counter = 0;
-            for (int i = 0; i < wcslen(cracked_key); i++) {
-              if (cracked_key[i] == key[i]) counter++;
-            }
-            // gettimeofday(&stop, NULL);
-            // succ_counter +=  (stop.tv_sec - start.tv_sec) * 1000;
-            // succ_counter += (stop.tv_usec - start.tv_usec) / 1000;
+            // int counter = 0;
+            // for (int i = 0; i < wcslen(cracked_key); i++) {
+            //   if (cracked_key[i] == key[i]) counter++;
+            // }
+            gettimeofday(&stop, NULL);
+            succ_counter +=  (stop.tv_sec - start.tv_sec) * 1000;
+            succ_counter += (stop.tv_usec - start.tv_usec) / 1000;
             // printf("%d %d %f\n", succ_counter);
             // printf("%d %d %d - ", key_sizes[key_i], text_sizes[text_i], counter);
             //
@@ -249,7 +249,7 @@ void wtester_run(tester *t) {
             // printf("\n");
             //
             // printf("KEY: %s CK: %s\n", key, cracked_key);
-            succ_counter += (float) counter / wcslen(key);
+            // succ_counter += (float) counter / wcslen(key);
             // printf("Succ %d\n", succ_counter);
             // exit(0);
             break;
@@ -258,7 +258,7 @@ void wtester_run(tester *t) {
         // exit(0);
       }
       // T1:
-      printf("%d %d %.2f\n", key_sizes[key_i], text_sizes[text_i], succ_counter * 10);
+      printf("%d %d %.2f\n", key_sizes[key_i], text_sizes[text_i], succ_counter / 3);
       // T2:
     }
   }
