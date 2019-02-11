@@ -5,19 +5,13 @@
 #include "unsigned_pair.h"
 #include "argparser.h"
 
-#define DEFAULT_PATH "./src/config.cfg"
-const wchar_t *EN=L"en";
-const wchar_t* LANGUAGES_KW = L"languages";
-const wchar_t* ALPHABETS_KW = L"alphabets";
-const wchar_t* FREQ_KW = L"freq_tables";
-const wchar_t* END = L"end";
 
 param_t cfg_init() {
   param_t cfg;
   cfg.freq_table   = up_init();
   cfg.klt			     = up_init();
-  cfg.min_kl		   = 4;
-  cfg.max_kl		   = 64;
+  cfg.min_kl		   = MIN_KEY_LEN;
+  cfg.max_kl		   = MAX_KEY_LEN;
   *cfg.keyword     = '\0';
   cfg.cipher_text  = 0;
   cfg.wcipher_text = 0;
@@ -39,18 +33,17 @@ void cfg_parse_args(param_t *cfg, const char* argv[], int argc) {
 
 		if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--cipher-file") == 0) {
 			if (++i < argc) 
-				strncpy(cfg -> cipher_file, argv[i], strlen(argv[i]) % 250);
-      cfg->cipher_file[strlen(argv[i]) % 250] = '\0';
+				strncpy(cfg -> cipher_file, argv[i], strlen(argv[i]) % FILE_MAX);
+      cfg->cipher_file[strlen(argv[i]) % FILE_MAX] = '\0';
     }
     else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--destination") == 0) {
 			if (++i < argc) {
-        strncpy(cfg -> destination, argv[i], strlen(argv[i]) % 250);
-        cfg->destination[strlen(argv[i]) % 250] = '\0';
+        strncpy(cfg -> destination, argv[i], strlen(argv[i]) % FILE_MAX);
+        cfg->destination[strlen(argv[i]) % FILE_MAX] = '\0';
       }
 
     }
 		else if (strcmp(argv[i], "-k") == 0 || strcmp(argv[i], "--keyword") == 0) {
-			printf("ASDASD\n");
       if (++i < argc) {
         cfg -> keyword[0] = (wchar_t) argv[i][0];
         cfg -> keyword[1] = (wchar_t) argv[i][1];
@@ -78,8 +71,12 @@ int cfg_parse_keywords(param_t *cfg) {
   FILE *fp;
   wchar_t line[120];
 
-  fp = fopen(DEFAULT_PATH, "r");
+	char path[FILE_MAX];
+	sprintf(path, "%s/.", getenv("HOME"), DEFAULT_PATH);
+
+  fp = fopen(path, "r");
   if (fp == NULL) {
+		fprintf(stderr, COLOR_RED "[ - ] Cannot find config path.\n");
     exit(-1);
   }
 
@@ -120,8 +117,12 @@ int cfg_parse_alphabet(param_t *cfg) {
   FILE *fp;
   wchar_t line[120];
 
-  fp = fopen(DEFAULT_PATH, "r");
+  char path[FILE_MAX];
+	sprintf(path, "%s/.", getenv("HOME"), DEFAULT_PATH);
+
+  fp = fopen(path, "r");
   if (fp == NULL) {
+		fprintf(stderr, COLOR_RED "[ - ] Cannot find config path.\n");
     exit(-1);
   }
 
@@ -163,8 +164,10 @@ void cfg_parse_freqs(param_t* cfg) {
   FILE *fp;
   wchar_t line[120];
 
-  fp = fopen(DEFAULT_PATH, "r");
+	char path[FILE_MAX];
+  fp = fopen(path, "r");
   if (fp == NULL) {
+		fprintf(stderr, COLOR_RED "[ - ] Cannot find config path.\n");
     exit(-1);
   }
 

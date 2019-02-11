@@ -1,5 +1,6 @@
 #include "cracker.h"
 #include <string.h>
+#include "globals.h"
 
 void vc_crack(const param_t *params, size_t nth, char *key_output) {
     float pair[2] = { 0 };
@@ -40,18 +41,18 @@ char vc_guess_char(const param_t *params, int key_length, int offset) {
   up_sort(&cct);
 
 	char output;
-  float chi     = 1000; 
+  float chi     = CHI_MAX; 
   float pair[2] = { 0 };
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < MAX_CHI_TRY; i++) {
     up_get_pair(&cct, i, pair);
     char temp_output = pair[0];
     float sog = vc_score_of_guess(params, &cct, key_length, offset, temp_output - 'E');
     if (sog < chi) {
       chi = sog;
-      output = temp_output - 'E';
+      output = temp_output - HIGHEST_CHAR;
       if (output < 0) 
-				output += 26;
+				output += ENG_ALP_LEN;
       output += 'A';
     }
   }
@@ -62,7 +63,7 @@ float vc_score_of_guess(const param_t *params, UnsignedPair *cct, int key_length
   int offset, int shift) {
 
   if (shift < 0) 
-		shift += 26;
+		shift += ENG_ALP_LEN;
 
   float error = 0;
   float count = 0;
@@ -152,9 +153,9 @@ wchar_t wvc_guess_char(const param_t* params, int key_length, int offset) {
   up_sort(&cct);
 
   wchar_t output;
-  float chi = 1000;
+  float chi = CHI_MAX;
   
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < MAX_CHI_TRY; i++) {
     float pair[2] = { 0 };
     up_get_pair(&cct, i, pair);
 

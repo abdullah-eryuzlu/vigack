@@ -10,14 +10,10 @@
 // #include "tester.c"
 #include <time.h>
 #include "argparser.c"
-
-#define RED    "\033[31m"
-#define RESET  "\033[0m"
-
+#include "globals.h"
 
 char parse_input() {
-  printf("Pass: p, Decrypt n characters: d, Decrypt all: a, exit: e\n\
-			Write to file: f: ");
+  printf("Pass: p, Decrypt n characters: d, Decrypt all: a, exit: e Write to file: f: ");
 
   char c;
 	scanf(" %c", &c);
@@ -89,7 +85,7 @@ void run_nonen(param_t *cfg) {
 				FILE *fp = fopen(cfg -> destination, "w");
 				if (NULL == fp) {
 					printf("%s\n", cfg -> destination);
-				  fprintf(stderr, RED "[ - ] Filename does not exists!\n" RESET);	
+				  fprintf(stderr, COLOR_RED "[ - ] Filename does not exists!\n" COLOR_RESET);	
 					continue;
 				}
 				
@@ -100,9 +96,6 @@ void run_nonen(param_t *cfg) {
 			else if ('e' == op) {
 				exit(0);
 			}
-
-		  else 
-				break;
 		}
 	}
  
@@ -163,7 +156,7 @@ void run_en(param_t *cfg) {
 				FILE *fp = fopen(cfg -> destination, "w");
 				if (NULL == fp) {
 					printf("%s\n", cfg -> destination);
-				  fprintf(stderr, RED "[ - ] Filename does not exists!\n" RESET);	
+				  fprintf(stderr, COLOR_RED "[ - ] Filename does not exists!\n" COLOR_RESET);	
 					continue;
 				}
 
@@ -174,9 +167,6 @@ void run_en(param_t *cfg) {
 			else if ('e' == op) {
 				exit(0);
 			}
-
-		  else 
-				break;
 		}
 	}
   free(cfg -> cipher_text);
@@ -196,7 +186,7 @@ int main(int argc, char const *argv[]) {
   cfg_parse_freqs(&cfg);
   cfg_parse_cipher(&cfg);
 
-	if (wcscmp(cfg.keyword, L"en") == 0) {
+	if (wcscmp(cfg.keyword, EN) == 0) {
 		run_en(&cfg);
 	} else {
     run_nonen(&cfg);
