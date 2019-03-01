@@ -32,7 +32,7 @@ void cfg_parse_args(param_t *cfg, const char* argv[], int argc) {
   for (int i = 0; i < argc; i++) {
 
 		if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--cipher-file") == 0) {
-			if (++i < argc) 
+			if (++i < argc)
 				strncpy(cfg -> cipher_file, argv[i], strlen(argv[i]) % FILE_MAX);
       cfg->cipher_file[strlen(argv[i]) % FILE_MAX] = '\0';
     }
@@ -52,13 +52,13 @@ void cfg_parse_args(param_t *cfg, const char* argv[], int argc) {
     }
 
     else if (strcmp(argv[i], "-m") == 0 || strcmp(argv[i], "--min-kl") == 0)
-      if (++i < argc) 
+      if (++i < argc)
 				cfg -> min_kl = atoi(argv[i]);
 
     else if (strcmp(argv[i], "-M") == 0 || strcmp(argv[i], "--max-kl") == 0)
-      if (++i < argc) 
+      if (++i < argc)
 				cfg -> max_kl = atoi(argv[i]);
-    
+
   }
 
   if (strlen(cfg->cipher_file) == 0 || wcslen(cfg->keyword) == 0) {
@@ -72,7 +72,7 @@ int cfg_parse_keywords(param_t *cfg) {
   wchar_t line[120];
 
 	char path[FILE_MAX];
-	sprintf(path, "%s/.", getenv("HOME"), DEFAULT_PATH);
+	sprintf(path, "%s%s", getenv("HOME"), DEFAULT_PATH);
 
   fp = fopen(path, "r");
   if (fp == NULL) {
@@ -83,7 +83,7 @@ int cfg_parse_keywords(param_t *cfg) {
   int is_found = 0;
 
   while (fgetws(line, 120, fp) != NULL) {
-    
+
 		if (line[wcslen(line) - 1] == '\n')
       line[wcslen(line) - 1] = '\0';
 
@@ -118,7 +118,7 @@ int cfg_parse_alphabet(param_t *cfg) {
   wchar_t line[120];
 
   char path[FILE_MAX];
-	sprintf(path, "%s/.", getenv("HOME"), DEFAULT_PATH);
+	sprintf(path, "%s%s", getenv("HOME"), DEFAULT_PATH);
 
   fp = fopen(path, "r");
   if (fp == NULL) {
@@ -160,11 +160,13 @@ int cfg_parse_alphabet(param_t *cfg) {
 }
 
 void cfg_parse_freqs(param_t* cfg) {
-	 
+
   FILE *fp;
   wchar_t line[120];
 
 	char path[FILE_MAX];
+  sprintf(path, "%s%s", getenv("HOME"), DEFAULT_PATH);
+
   fp = fopen(path, "r");
   if (fp == NULL) {
 		fprintf(stderr, COLOR_RED "[ - ] Cannot find config path.\n");
@@ -175,7 +177,6 @@ void cfg_parse_freqs(param_t* cfg) {
   int kw_found = 0;
 
   while (fgetws(line, 120, fp) != NULL) {
-		
 		int line_len = wcslen(line);
     if (line[line_len - 1] == '\n') {
       line[line_len - 1] = '\0';

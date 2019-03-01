@@ -11,18 +11,18 @@ UnsignedPair up_init() {
 
 float* up_get_pointer(const UnsignedPair* self, const float key) {
 
-  if (self -> m_size == 0) 
+  if (self -> m_size == 0)
 		return 0;
 
   for (int i = 0; i < self -> m_size; i += 2)
-    if (self -> m_elements[i] == key) 
+    if (self -> m_elements[i] == key)
 			return &(self -> m_elements[i+1]);
-  
+
   return 0;
 }
 
 void up_sort(const UnsignedPair* self) {
-  if (self -> m_size == 0) 
+  if (self -> m_size == 0)
 		return;
 
   int index = 0;
@@ -46,22 +46,23 @@ void up_sort(const UnsignedPair* self) {
 
 float up_get_value(const UnsignedPair *self, const float key) {
   for (int i = 0; i < self -> m_size; i += 2)
-    if (self -> m_elements[i] == key) 
+    if (self -> m_elements[i] == key)
 			return self -> m_elements[i+1];
-  
+
   return -1;
 }
 
 void up_log(const UnsignedPair* self) {
+  printf("%d\n", self -> m_size);
   for (int i = 0; i < self -> m_size; i += 2)
     printf("%d %.4f\n", (int)self -> m_elements[i], self -> m_elements[i+1]);
-  
+
 }
 
 void up_set_value(UnsignedPair *self, const float key, const float value) {
   float* current_value = up_get_pointer(self, key);
 
-  if (current_value) 
+  if (current_value)
 		*current_value = value;
   else {
     float *new_elements = malloc(sizeof(float) * (self -> m_size + 2));
@@ -87,10 +88,10 @@ size_t up_size(const UnsignedPair *self) {
 
 void up_sum_value(UnsignedPair *self, const float key, const unsigned int amount) {
   float *m_key = up_get_pointer(self, key);
-  
-	if (m_key) 
+
+	if (m_key)
 		*m_key += amount;
-  else 
+  else
 		up_set_value(self, key, amount);
 }
 

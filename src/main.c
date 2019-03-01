@@ -32,11 +32,11 @@ void run_nonen(param_t *cfg) {
 
 	  wchar_t output[(int) pair[0] + 1];
 		wvc_crack(cfg_temp, i, output);
-    
+
 		printf("****************************\n");
 		printf("KEY: %d: ", i+1);
-		
-		for (int i = 0; i < wcslen(output); i++) 
+
+		for (int i = 0; i < wcslen(output); i++)
 			printf("%lc", output[i]);
 		printf("\n");
 
@@ -53,7 +53,7 @@ void run_nonen(param_t *cfg) {
 				int output_len    = wcslen(output);
 				int decrypted_len = wcslen(decrypted);
 
-				wvg_ndecrypt(cfg_temp -> alphabet, cfg_temp -> wcipher_text, output, 
+				wvg_ndecrypt(cfg_temp -> alphabet, cfg_temp -> wcipher_text, output,
 						decrypted, counter, output_len);
 				counter += output_len;
 
@@ -61,7 +61,7 @@ void run_nonen(param_t *cfg) {
 					printf("%lc", decrypted[i]);
 				printf("\n");
 
-				if (decrypted_len < output_len) 
+				if (decrypted_len < output_len)
 					break;
 			}
 
@@ -70,7 +70,7 @@ void run_nonen(param_t *cfg) {
         decrypted[wcslen(cfg -> wcipher_text)] = '\0';
 
 				wvg_decrypt(cfg_temp -> alphabet, cfg_temp -> wcipher_text, output, decrypted);
-				
+
 				for (int i = 0; i < wcslen(decrypted); i++)
 					printf("%lc", decrypted[i]);
 				printf("\n");
@@ -79,16 +79,16 @@ void run_nonen(param_t *cfg) {
 			else if ('f' == op) {
 				wchar_t decrypted[wcslen(cfg -> wcipher_text) + 1];
 				decrypted[wcslen(cfg -> wcipher_text)] = '\0';
-				
+
 				wvg_decrypt(cfg_temp -> alphabet, cfg_temp -> wcipher_text, output, decrypted);
-				
+
 				FILE *fp = fopen(cfg -> destination, "w");
 				if (NULL == fp) {
 					printf("%s\n", cfg -> destination);
-				  fprintf(stderr, COLOR_RED "[ - ] Filename does not exists!\n" COLOR_RESET);	
+				  fprintf(stderr, COLOR_RED "[ - ] Filename does not exists!\n" COLOR_RESET);
 					continue;
 				}
-				
+
 				fwprintf(fp, L"KEY: %ls\nPLAIN TEXT: %ls", output, decrypted);
 				fclose(fp);
 			}
@@ -98,7 +98,7 @@ void run_nonen(param_t *cfg) {
 			}
 		}
 	}
- 
+
 }
 
 void run_en(param_t *cfg) {
@@ -113,7 +113,7 @@ void run_en(param_t *cfg) {
 
 		char output[(int) pair[0] + 1];
 		vc_crack(cfg_temp, i, output);
-    
+
 		printf("****************************\n");
 		printf("KEY %d: %s\n", i + 1, output);
 
@@ -124,21 +124,21 @@ void run_en(param_t *cfg) {
 
 		  if ('p' == op)
 				break;
-			
+
 			else if ('d' == op) {
 				int output_len = strlen(output);
 				char decrypted[output_len + 1];
 
-				vg_ndecrypt(cfg_temp -> cipher_text, output, 
+				vg_ndecrypt(cfg_temp -> cipher_text, output,
 						decrypted, counter, output_len);
-				
+
 				counter += output_len;
-		    if (strlen(decrypted) < output_len) 
+		    if (strlen(decrypted) < output_len)
 					break;
-        
+
 				printf("%s\n", decrypted);
 		  }
-      
+
 			else if ('a' == op) {
         char decrypted[strlen(cfg -> cipher_text) + 1];
         decrypted[strlen(cfg -> cipher_text)] = '\0';
@@ -146,7 +146,7 @@ void run_en(param_t *cfg) {
 				vg_decrypt(cfg_temp -> cipher_text, output, decrypted);
         printf("%s\n", decrypted);
 			}
-			
+
 			else if ('f' == op) {
 				char decrypted[strlen(cfg -> cipher_text) + 1];
 				decrypted[strlen(cfg -> cipher_text)] = '\0';
@@ -156,14 +156,14 @@ void run_en(param_t *cfg) {
 				FILE *fp = fopen(cfg -> destination, "w");
 				if (NULL == fp) {
 					printf("%s\n", cfg -> destination);
-				  fprintf(stderr, COLOR_RED "[ - ] Filename does not exists!\n" COLOR_RESET);	
+				  fprintf(stderr, COLOR_RED "[ - ] Filename does not exists!\n" COLOR_RESET);
 					continue;
 				}
 
 				fprintf(fp, "KEY: %s\nPLAIN TEXT: %s", output, decrypted);
 				fclose(fp);
 			}
-			
+
 			else if ('e' == op) {
 				exit(0);
 			}
